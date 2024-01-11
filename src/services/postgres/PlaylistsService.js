@@ -20,9 +20,10 @@ class PlaylistsService {
     return result.rows[0].id;
   }
 
-  async getPlaylists() {
+  async getPlaylists(owner) {
     const query = {
-      text: 'SELECT id, name FROM playlists',
+      text: 'SELECT id, name FROM playlists WHERE owner = $1',
+      values: [owner],
     };
     const result = await this._pool.query(query);
     return result.rows;
@@ -37,6 +38,19 @@ class PlaylistsService {
     if (!result.rows.length) {
       throw new InvariantError('Playlist gagal dihapus. Id tidak ditemukan');
     }
+  }
+
+  async addSongToPlaylists(playlistId, songId) {
+    const id = `playlistsong-${nanoid(16)}`;
+    const query = {
+      text: 'INSERT INTO playlistsongs VALUES($1, $2, $3) RETURNING id',
+      values: [id, playlistId, songId],
+    };
+    const result = await this._pool.query(query);
+    if (!result.rows[0].id) {
+      throw new InvariantError('Lagu gagal ditambahkan ke playlist');
+    }
+    return result.rows[0].id;
   }
 }
 
