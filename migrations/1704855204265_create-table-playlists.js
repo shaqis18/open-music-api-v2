@@ -1,17 +1,20 @@
-const Joi = require('joi');
+/* eslint-disable camelcase */
+exports.up = (pgm) => {
+  pgm.createTable('playlists', {
+    id: {
+      type: 'VARCHAR(50)',
+      primaryKey: true,
+    },
+    name: {
+      type: 'VARCHAR(50)',
+      notNull: true,
+    },
+    owner: {
+      type: 'VARCHAR(50)',
+    },
+  });
+};
 
-const PlaylistPayloadSchema = Joi.object({
-  name: Joi.string().required(),
-  owner: Joi.string(),
-});
-
-const addPlaylistSongSchema = Joi.object({
-  playlistId: Joi.string(),
-  songId: Joi.string().required(),
-});
-
-const deletePlaylistSongSchema = Joi.object({
-  songId: Joi.string().required(),
-});
-
-module.exports = { PlaylistPayloadSchema, addPlaylistSongSchema, deletePlaylistSongSchema };
+exports.down = (pgm) => {
+  pgm.dropTable('playlists');
+};
