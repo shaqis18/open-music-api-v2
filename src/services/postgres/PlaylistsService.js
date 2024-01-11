@@ -2,7 +2,7 @@ const { nanoid } = require('nanoid');
 const { Pool } = require('pg');
 const InvariantError = require('../../exception/InvariantError');
 const NotFoundError = require('../../exception/NotFoundError');
-const AuthorizationError = require('../../exception/AuthError');
+const AuthorizationError = require('../../exception/AuthentError');
 
 class PlaylistsService {
   constructor(collaborationService) {

@@ -4,7 +4,7 @@ const { nanoid } = require('nanoid');
 const bcrypt = require('bcrypt');
 const InvariantError = require('../../exception/InvariantError');
 const NotFoundError = require('../../exception/NotFoundError');
-const AuthenticationError = require('../../exception/AuthError');
+const AuthenticationError = require('../../exception/AuthentError');
 
 class UsersService {
   constructor() {
