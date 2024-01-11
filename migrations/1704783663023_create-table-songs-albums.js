@@ -2,10 +2,10 @@
 // memberikan foreign key pada song terhadap album
 exports.up = (pgm) => {
   pgm.addConstraint('songs',
-    'fk_songs.album_id_albums.id',
-    'FOREIGN KEY(album_id) REFERENCES albums(id) ON DELETE CASCADE');
+    'fk_songs.albumId_albums.id',
+    'FOREIGN KEY(albumId) REFERENCES albums(id) ON DELETE CASCADE');
 };
 
 exports.down = (pgm) => {
-  pgm.dropConstraint('songs', 'fk_songs.album_id_albums.id');
+  pgm.dropConstraint('songs', 'fk_songs.albumId_albums.id');
 };

@@ -29,12 +29,22 @@ class SongsService {
     return result.rows[0].id;
   }
 
-  async getSongs() {
-    const query = {
-      text: 'SELECT id, title, performer FROM songs',
-    };
-    const result = await this._pool.query(query);
-    return result.rows.map(songsdb);
+  async getSongs(title, performer) {
+    let filteredSongs = await this._pool.query('SELECT id, title, performer FROM songs');
+
+    if (title !== undefined) {
+      const query = {
+        text: 'SELECT id, title, performer FROM songs WHERE LOWER(title) LIKE $1',
+        values: [`%${title}%`],
+      };
+      filteredSongs = await this._pool.query(query);
+    }
+
+    if (performer !== undefined) {
+      filteredSongs = await this._pool.query(`SELECT id, title, performer FROM songs WHERE LOWER(performer) LIKE '%${performer}%'`);
+    }
+
+    return filteredSongs.rows.map(songsdb);
   }
 
   async getSongById(id) {
@@ -54,6 +64,18 @@ class SongsService {
     const query = {
       text: 'SELECT id, title FROM songs WHERE title = $1',
       values: [title],
+    };
+    const result = await this._pool.query(query);
+    if (!result.rows.length) {
+      throw new NotFoundError('Lagu tidak ditemukan');
+    }
+    return result.rows;
+  }
+
+  async getSongByPerformer(performer) {
+    const query = {
+      text: 'SELECT id, title FROM songs WHERE performer = $1',
+      values: [performer],
     };
     const result = await this._pool.query(query);
     if (!result.rows.length) {

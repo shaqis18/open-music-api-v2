@@ -23,15 +23,27 @@ class AlbumsService {
   }
 
   async getAlbumById(id) {
-    const query = {
+    const queryAlbum = {
       text: 'SELECT * FROM albums WHERE id = $1',
       values: [id],
     };
-    const result = await this._pool.query(query);
-    if (!result.rows.length) {
+
+    const querySong = {
+      text: 'SELECT songs.id, songs.title, songs.performer FROM songs INNER JOIN albums ON songs.album_id = albums.id WHERE albums.id = $1',
+      values: [id],
+    };
+
+    const resultAlbum = await this._pool.query(queryAlbum);
+    const resultSong = await this._pool.query(querySong);
+    if (!resultAlbum.rows.length) {
       throw new NotFoundError('Album tidak ditemukan');
     }
-    return result.rows[0];
+    return {
+      id: resultAlbum.rows[0].id,
+      name: resultAlbum.rows[0].name,
+      year: resultAlbum.rows[0].year,
+      songs: resultSong.rows,
+    };
   }
 
   async getAlbumBySongId(id) {
